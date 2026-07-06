@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Library</title>
+</head>
+<body>
+    <h1>Library App</h1>
+
+    <p>This app does not authenticate users directly.</p>
+    <p>It delegates authentication to IL-Hub.</p>
+
+    {% if is_logged_in %}
+        <p>
+            User is logged in through IL-Hub
+            {% if context_profile %}
+                as {{ context_profile.user.display_name }}.
+            {% else %}
+                .
+            {% endif %}
+        </p>
+
+        {% if error %}
+            <p>{{ error }}</p>
+        {% endif %}
+
+        <p>
+            <a href="{% url 'library:dashboard' %}">
+                Go to dashboard
+            </a>
+        </p>
+
+        <form method="post" action="{% url 'library:logout' %}">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    {% else %}
+        <a href="{% url 'library:login_with_hub' %}">
+            Login with IL-Hub
+        </a>
+    {% endif %}
+</body>
+</html>

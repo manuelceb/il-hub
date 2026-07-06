@@ -1,0 +1,33 @@
+<h1>Library Dashboard</h1>
+
+{% if is_logged_in %}
+    <p>
+        User is logged in through IL-Hub
+        {% if context_profile %}
+            as:  {{ context_profile.user.display_name }}.
+        {% else %}
+            .
+        {% endif %}
+    </p>
+
+    <form method="post" action="{% url 'library:logout' %}">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+
+    <h2>Context-aware profile received from IL-Hub</h2>
+
+    {% if context_profile %}
+        <pre>{{ context_profile }}</pre>
+    {% else %}
+        <p>No profile received.</p>
+        <p>{{ error }}</p>
+    {% endif %}
+
+{% else %}
+    <p>User is not logged in.</p>
+
+    <a href="{% url 'library:login_with_hub' %}">
+        Login with IL-Hub
+    </a>
+{% endif %}

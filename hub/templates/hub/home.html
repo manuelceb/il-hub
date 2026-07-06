@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hub</title>
+</head>
+<body>
+    <main>
+        <h1>IL-Hub</h1>
+
+        {% if user.is_authenticated %}
+            <p>
+                User is logged in as {{ display_name }}.
+            </p>
+
+            <form method="post" action="{% url 'hub:logout' %}">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+        {% else %}
+            <p>User is not logged in</p>
+
+            <a href="{% url 'hub:login' %}">
+                Login to IL-Hub
+            </a>
+        {% endif %}
+    </main>
+</body>
+</html>
