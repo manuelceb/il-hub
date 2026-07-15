@@ -1,5 +1,7 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 import os
 import uuid
@@ -54,6 +56,7 @@ class User(AbstractUser):
     """
     username = None
     email = models.EmailField(unique=True)
+    user_uid = models.UUIDField(default=uuid.uuid4,unique=True, editable=False, blank=True)
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
     bio = models.TextField(blank=True, default="")
@@ -73,10 +76,10 @@ class LibraryInterestTopics(models.Model):
     
 class LibraryContext(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="library_context")
-    nickname = models.CharField(max_length=200, blank=False)
+    nickname = models.CharField(max_length=200, blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    interest_topics = models.ManyToManyField(LibraryInterestTopics)
+    interest_topics = models.ManyToManyField(LibraryInterestTopics, blank=True)
     email_notifications = models.BooleanField(default=False)
     photo_path = models.ImageField(upload_to=profile_photo_uuid, blank=True, null=True)
 
@@ -88,10 +91,18 @@ class BlogTopics(models.Model):
     
 class BlogContext(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="blog_context")
-    nickname = models.CharField(max_length=200, blank=False)
+    nickname = models.CharField(max_length=200, blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     email_notifications = models.BooleanField(default=False)
     photo_path = models.ImageField(upload_to=profile_photo_uuid, blank=True, null=True)
-    topics = models.ManyToManyField(BlogTopics)
+    topics = models.ManyToManyField(BlogTopics, blank=True)
 
+
+@receiver(post_save, sender=User)
+def create_user_contexts(sender, instance, created, **kwargs):
+    if not created:
+        return
+
+    LibraryContext.objects.get_or_create(user=instance)
+    BlogContext.objects.get_or_create(user=instance)

@@ -126,7 +126,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 LOGIN_URL = "hub:login"
-LOGIN_REDIRECT_URL = "library:dashboard"
+LOGIN_REDIRECT_URL = "hub:home"
 LOGOUT_REDIRECT_URL = "library:landing"
 
 SESSION_COOKIE_AGE = 90
