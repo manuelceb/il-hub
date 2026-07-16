@@ -1,4 +1,5 @@
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.views import APIView
+from rest_framework.exceptions import PermissionDenied, AuthenticationFailed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.contrib.auth.views import LoginView
@@ -36,25 +37,22 @@ class HubLoginView(LoginView):
         return context
 
 
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def context_profile(request):
-    
-    _log_step(
-        "Context profile API view started",
-        authenticated=bool(request.user and request.user.is_authenticated),
-    )
-    access_token = request.auth
-    client_name = access_token.application.name if access_token.application else "unknown"
 
-    if client_name == "unknown":
-        return Response(
-            {
-                "error": "Unknown client",
-            },
-            status=403,
+class ContextProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        access_token = request.auth
+        client_id = access_token.application.client_id
+
+        if client_id is None:
+            raise AuthenticationFailed(
+                "The token is not associated with an application."
+            )
+
+        data = get_user_profile(
+            user=request.user,
+            client_id=client_id,
         )
-    
-    data = get_user_profile(request.user, client_name)
-    
-    return Response(data)
+
+        return Response(data)
