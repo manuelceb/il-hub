@@ -57,14 +57,16 @@ The rationale behind this design, is to keep isolated tables for each client, se
 UUID registry is used as unique user identifier. Each client receives the uuid that they must store to track their users in their own user table. This approach share to all clients the same user identifier. This could be a issue that can be improved implementing some pairwise identifiers registry.
 
 # v0.2.1
-Date: 2026-07-15
-Commit: 5af1318
+Date: 2026-07-16
+Commit: c04d83c
 
 ## Added
 
 - Client Registry ->  Each client has a register where is indicated the tables and attributes that should be fetched. The idea is to avoid traversing tables dinamically, instead, detailing all the (previously agreed between client and hub) data expected by the client. This is part of the coupling detailed before, but also a secure way to interact between applications.
-The implementation is done through a client registration dictionary where the data and attributes to be obtained come from (also the model and serializer). This approach avoid using the database to register the data for differente reasons. First, because the amount of clients expected should mantain relatively static over the time. Second, the registry contains models and serializers that must be executed, therefore storing in a database implies that some form of conversion between database and code must be implemented, which is ultimately inconvenient and hard to mantain. The dictionary structure can be modified, read and shared with clients in a consistent way. 
-- Serializers -> all contextual data is serialized before sneding through the api.
+The implementation is done through a client registration dictionary where the data and attributes to be obtained come from (also the model and serializer). This approach avoid using the database to register the data for differente reasons. First, because the amount of clients expected should mantain relatively stable over the time. Second, the registry contains models and serializers that must be executed, therefore storing in a database implies that some form of conversion between database and code must be implemented, which is ultimately inconvenient and hard to mantain. The dictionary structure can be modified, read and shared with clients in a consistent way. 
+A possible mitigation could be creating a json filed in the database as a back-up.
+
+- Serializers -> all contextual data is serialized before sending through the api.
 - Data model -> uuid as a shared identifier. 
 
 ---

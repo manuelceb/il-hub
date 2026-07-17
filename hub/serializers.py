@@ -1,7 +1,11 @@
 from rest_framework import serializers
-
 from .models import BlogContext, LibraryContext
 
+class ProfileResponseSerializer(serializers.Serializer):
+    """ Class that acts as a wrapper validating and formatting the final API response structure. """
+    user_uid = serializers.UUIDField()
+    client = serializers.CharField(max_lenght = 100)
+    profile = serializers.DictField()
 
 class LibraryContextSerializer(serializers.ModelSerializer):
     class Meta:
