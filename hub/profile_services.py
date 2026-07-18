@@ -1,6 +1,6 @@
-from rest_framework.exceptions import NotFound, PermissionDenied
 from .models import LibraryContext, BlogContext
 from .serializers import BlogContextSerializer, LibraryContextSerializer, ProfileResponseSerializer
+from .api_errors import ContextualProfileNotFound, ClientHandlerNotConfigured
 
 
 PROFILE_HANDLERS = {
@@ -20,9 +20,7 @@ def get_user_profile(user, client_name, request=None):
     client_handler = PROFILE_HANDLERS.get(client_name)
 
     if client_handler is None:
-        raise PermissionDenied(
-            "The requesting client is not identified."
-        )
+        raise ClientHandlerNotConfigured()
 
     queryset = client_handler["model"].objects.filter(user=user)
 
@@ -33,9 +31,7 @@ def get_user_profile(user, client_name, request=None):
     user_profile = queryset.first()
 
     if user_profile is None:
-        raise NotFound(
-            f"No profile exists for client: {client_name}."
-        )
+        raise ContextualProfileNotFound()
 
     profile_serializer = client_handler["serializer"](
         user_profile,

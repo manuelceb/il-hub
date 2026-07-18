@@ -113,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Santiago'
 
 USE_I18N = True
 
@@ -141,7 +141,7 @@ HUB_CLIENT_SECRET = "JlulM6yLZFBPiETqPvCRW0qHNPCoZrKs0qcPhmACVcRVUa9mvkHKqAH765v
 HUB_CONTEXT_PROFILE_URL = "http://127.0.0.1:8000/hub/api/v1/context-profile/"
 
 OAUTH2_PROVIDER = {
-    "ACCESS_TOKEN_EXPIRE_SECONDS": 60,
+    "ACCESS_TOKEN_EXPIRE_SECONDS": 300,
 }
 
 OAUTH2_PROVIDER_APPLICATION_MODEL = "oauth2_provider.Application"
@@ -158,5 +158,6 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
     ),
+    "EXCEPTION_HANDLER": "hub.exceptions.custom_exception_handler",
 }
 
