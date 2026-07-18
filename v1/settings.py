@@ -138,7 +138,7 @@ HUB_REVOKE_TOKEN_URL = "http://127.0.0.1:8000/o/revoke_token/"
 
 HUB_CLIENT_ID = "M3NwNfUD7ZolzA5mb81InHAfzbuZjZrsluFtgjBj"
 HUB_CLIENT_SECRET = "JlulM6yLZFBPiETqPvCRW0qHNPCoZrKs0qcPhmACVcRVUa9mvkHKqAH765vqTxkihB6UmjcOZYftuf3F0zYkkYYqKwlzYWhph7ETy7uIYi2CQ319uxg4DOc7G4X5TA1t"
-HUB_CONTEXT_PROFILE_URL = "http://127.0.0.1:8000/hub/api/context-profile/"
+HUB_CONTEXT_PROFILE_URL = "http://127.0.0.1:8000/hub/api/v1/context-profile/"
 
 OAUTH2_PROVIDER = {
     "ACCESS_TOKEN_EXPIRE_SECONDS": 60,
