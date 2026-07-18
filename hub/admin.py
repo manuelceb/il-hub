@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import User, LibraryInterestTopics, BlogTopics, LibraryContext, BlogContext
+from .models import User, LibraryInterestTopics, BlogTopics, ClientRegistry
 
 
 class CustomUserAdmin(UserAdmin):
@@ -40,3 +40,9 @@ class BlogTopicsAdmin(admin.ModelAdmin):
     list_display = ("topics",)
     search_fields = ("topics",)
 
+@admin.register(ClientRegistry)
+class ClientRegistryAdmin(admin.ModelAdmin):
+    list_display = (
+    "application",
+    "is_active",
+    )

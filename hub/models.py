@@ -96,6 +96,7 @@ class BlogContext(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
     email_notifications = models.BooleanField(default=False)
     photo_path = models.ImageField(upload_to=profile_photo_uuid, blank=True, null=True)
+    photo_modified_at = models.DateTimeField(auto_now=True)
     topics = models.ManyToManyField(BlogTopics, blank=True)
 
 
@@ -106,3 +107,14 @@ def create_user_contexts(sender, instance, created, **kwargs):
 
     LibraryContext.objects.get_or_create(user=instance)
     BlogContext.objects.get_or_create(user=instance)
+
+class ClientRegistry(models.Model):
+    application = models.OneToOneField(
+        "oauth2_provider.Application",
+        on_delete=models.CASCADE,
+        related_name="client_configuration",
+    )
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.application.name

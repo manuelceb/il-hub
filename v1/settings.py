@@ -144,6 +144,8 @@ OAUTH2_PROVIDER = {
     "ACCESS_TOKEN_EXPIRE_SECONDS": 60,
 }
 
+OAUTH2_PROVIDER_APPLICATION_MODEL = "oauth2_provider.Application"
+
 LIBRARY_REDIRECT_URI = "http://127.0.0.1:8000/library/oauth/callback/"
 
 CORS_ORIGIN_ALLOW_ALL = True

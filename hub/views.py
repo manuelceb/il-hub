@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render
 from .profile_services import get_user_profile
+from .models import ClientRegistry
 
 def _log_step(step, **data):
     print(f"[IL-Hub step] {step}")
@@ -43,16 +44,29 @@ class ContextProfileView(APIView):
 
     def get(self, request):
         access_token = request.auth
-        client_id = access_token.application.client_id
+        application = getattr(access_token, "application", None)
 
-        if client_id is None:
+        if application is None:
             raise AuthenticationFailed(
-                "The token is not associated with an application."
+                "Token has no application."
+            )
+        try:
+            registry  = application.client_configuration
+        except ClientRegistry.DoesNotExist:
+            raise PermissionDenied(
+                "This application is not registered for access."
             )
 
+        if not registry .is_active:
+            raise PermissionDenied(
+                "Profile access is disabled for this application."
+            )
+
+        client_name = application.name.strip().lower()
         data = get_user_profile(
             user=request.user,
-            client_id=client_id,
+            client_name=client_name,
+            request=request,
         )
 
         return Response(data)

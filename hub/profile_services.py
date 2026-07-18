@@ -3,9 +3,8 @@ from .models import LibraryContext, BlogContext
 from .serializers import BlogContextSerializer, LibraryContextSerializer, ProfileResponseSerializer
 
 
-CLIENT_REGISTRY = {
-    "M3NwNfUD7ZolzA5mb81InHAfzbuZjZrsluFtgjBj": {
-        "client_name": "library",
+PROFILE_HANDLERS = {
+    "library": {
         "model": LibraryContext,
         "serializer": LibraryContextSerializer,
         "prefetch": ("interest_topics",),
@@ -17,8 +16,8 @@ CLIENT_REGISTRY = {
     },
 }
 
-def get_user_profile(user, client_id):
-    client_handler = CLIENT_REGISTRY.get(client_id)
+def get_user_profile(user, client_name, request=None):
+    client_handler = PROFILE_HANDLERS.get(client_name)
 
     if client_handler is None:
         raise PermissionDenied(
@@ -35,16 +34,19 @@ def get_user_profile(user, client_id):
 
     if user_profile is None:
         raise NotFound(
-            f"No profile exists for client: {client_id} and user {user}'."
+            f"No profile exists for client: {client_name}."
         )
 
-    profile_serializer = client_handler["serializer"](user_profile)
+    profile_serializer = client_handler["serializer"](
+        user_profile,
+        context={"request": request},
+        )
 
     # Formatting and validating data structure  before sending
     response_serializer = ProfileResponseSerializer(
         data = {
             "user_uid": user.user_uid,
-            "client": client_id,
+            "client": client_name,
             "profile": profile_serializer.data
         }
     )
