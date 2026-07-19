@@ -1,0 +1,19 @@
+openapi: 3.0.3
+info:
+  title: 'CM3070 - Final Project: IL-Hub Contextual Profile API'
+  version: 1.0.0
+  description: A contextual API for federated systems
+paths:
+  /hub/api/v1/context-profile/:
+    get:
+      operationId: hub_api_v1_context_profile_retrieve
+      tags:
+      - hub
+      responses:
+        '200':
+          description: No response body
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows: {}
