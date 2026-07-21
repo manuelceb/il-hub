@@ -10,23 +10,19 @@ def custom_exception_handler(exc, context):
             {
                 "code": "internal_error",
                 "message": "An unexpected error occurred.",
-                "details": {},
             },
-            status=500,
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
     code = getattr(exc, "default_code", "api_error")
 
     if isinstance(response.data, dict) and "detail" in response.data:
         message = str(response.data["detail"])
-        details = {}
     else:
         message = "Validation failed."
-        details = response.data if isinstance(response.data, dict) else {}
 
     response.data = {
         "code": code,
         "message": message,
-        "details": details,
     }
     return response

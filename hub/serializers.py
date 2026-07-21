@@ -8,6 +8,11 @@ class ProfileResponseSerializer(serializers.Serializer):
     profile = serializers.DictField()
 
 class LibraryContextSerializer(serializers.ModelSerializer):
+    interest_topics = serializers.SlugRelatedField(
+        many = True,
+        read_only = True,
+        slug_field = "topics"
+    )
     class Meta:
         model = LibraryContext
         fields = (
@@ -21,6 +26,11 @@ class LibraryContextSerializer(serializers.ModelSerializer):
 
 
 class BlogContextSerializer(serializers.ModelSerializer):
+    topics = serializers.SlugRelatedField(
+        many = True,
+        read_only = True,
+        slug_field = "topics"
+    )
     class Meta:
         model = BlogContext
         fields = (
@@ -44,9 +54,4 @@ class ApiErrorSerializer(serializers.Serializer):
     )
     message = serializers.CharField(
         help_text="Human-readable error description."
-    )
-    details = serializers.JSONField(
-        required=False,
-        default=dict,
-        help_text="Additional information about the error.",
     )

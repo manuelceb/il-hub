@@ -8,11 +8,6 @@ from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 
-def _log_step(step, **data):
-    print(f"[library step] {step}")
-    for key, value in data.items():
-        print(f"[library step]   {key}: {value}")
-
 def _clear_library_oauth_session(request):
     # it clears Library OAuth values from session
     for session_key in (
@@ -25,18 +20,10 @@ def _clear_library_oauth_session(request):
     ):
         request.session.pop(session_key, None)
 
-    _log_step("cleared Library OAuth values from session")
-
 def _get_context_profile(access_token):
     if not access_token:
         return None, None, False
-
-    _log_step(
-        "requesting context profile from Hub API",
-        url=settings.HUB_CONTEXT_PROFILE_URL,
-        authorization_header=f"Bearer {access_token[0:10]}..."
-    )
-    
+  
     # When using bearer tokens, RFC6749 states the following header format to make the request
     response = requests.get(
         settings.HUB_CONTEXT_PROFILE_URL,
@@ -48,11 +35,9 @@ def _get_context_profile(access_token):
 
     if response.status_code == 200:
         # IL-Hub context profile request succeeded
-        _log_step("Hub context profile request succeeded")
         context_profile = response.json()
         return context_profile, None, True
     
-    _log_step("Hub context profile request failed")
     return None, response.text, False
 
 
@@ -76,19 +61,15 @@ def landing(request):
 
 
 def login_with_hub(request):
-    _log_step("login with IL-Hub started")
     # generating PKCE values
     state = secrets.token_urlsafe(32)
     code_verifier = secrets.token_urlsafe(64)
+    
     # code challenge should be hashed according to oauth.toolkit library
     code_challenge = base64.urlsafe_b64encode(
         hashlib.sha256(code_verifier.encode()).digest()
     ).rstrip(b"=").decode()
-    _log_step(
-        "created OAuth PKCE values",
-        code_verifier=code_verifier[0:10]+"...",
-        code_challenge=code_challenge[0:10]+"..."
-    )
+    
     # storing OAuth state and code verifier in session
     request.session["library_oauth_state"] = state
     request.session["library_oauth_code_verifier"] = code_verifier
@@ -97,14 +78,13 @@ def login_with_hub(request):
         "response_type": "code",
         "client_id": settings.HUB_CLIENT_ID,
         "redirect_uri": settings.LIBRARY_REDIRECT_URI,
-        "scope": "read",
+        "scope": "contextual_profile:read",
         "state": state,
         "code_challenge": code_challenge,
         "code_challenge_method": "S256",
     }
 
     # redirecting user to IL-Hub authorize endpoint
-    _log_step("redirecting user to IL-Hub authorize endpoint")
     authorize_url = f"{settings.HUB_AUTHORIZE_URL}?{urlencode(params)}"
 
     return redirect(authorize_url)
@@ -134,7 +114,6 @@ def oauth_callback(request):
         return HttpResponseBadRequest("Missing OAuth code verifier.")
 
     # once callback validated authorization code and state, now it exchanges authorization code for tokens
-    _log_step("exchanging authorization code for tokens")
     response = requests.post(
         settings.HUB_TOKEN_URL,
         data={
@@ -152,8 +131,6 @@ def oauth_callback(request):
         return HttpResponseBadRequest(response.text)
 
     token_data = response.json()
-
-    _log_step("token exchange succeed")
 
     # storing tokens in session and cleared temporary OAuth values
     request.session["library_access_token"] = token_data.get("access_token")
@@ -178,8 +155,7 @@ def dashboard(request):
         if not token_is_valid:
             _clear_library_oauth_session(request)
             access_token = None
-    else:
-        _log_step("dashboard has no access token; rendering logged-out state")
+        
     return render(
         request,
         "library/dashboard.html",

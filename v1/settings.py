@@ -143,7 +143,13 @@ HUB_CONTEXT_PROFILE_URL = "http://127.0.0.1:8000/hub/api/v1/context-profile/"
 
 OAUTH2_PROVIDER = {
     "ACCESS_TOKEN_EXPIRE_SECONDS": 300,
+    "SCOPES": {
+        "contextual_profile:read": "Read access to contextual profiles"
+        },
+    "DEFAULT_SCOPES": [],
+    "ERROR_RESPONSE_WITH_SCOPES": True,
 }
+
 
 OAUTH2_PROVIDER_APPLICATION_MODEL = "oauth2_provider.Application"
 

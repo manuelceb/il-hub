@@ -4,13 +4,10 @@ from rest_framework.response import Response
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render
 from .profile_services import get_user_profile
+from oauth2_provider.contrib.rest_framework import OAuth2Authentication,TokenHasScope
 from .models import ClientRegistry
 from .api_errors import ClientInactive, TokenClientError, ClientNotRegistered
 
-def _log_step(step, **data):
-    print(f"[IL-Hub step] {step}")
-    for key, value in data.items():
-        print(f"[IL-Hub step]   {key}: {value}")
 
 def home(request):
     display_name = None
@@ -40,7 +37,11 @@ class HubLoginView(LoginView):
 
 
 class ContextProfileView(APIView):
-    permission_classes = [IsAuthenticated]
+    
+    http_method_names = ["get"]
+    authentication_classes = [OAuth2Authentication]
+    permission_classes = [TokenHasScope]
+    required_scopes = ["contextual_profile:read"]
 
     def get(self, request):
         access_token = request.auth
@@ -56,7 +57,7 @@ class ContextProfileView(APIView):
         if not registry.is_active:
             raise ClientInactive()
 
-        client_name = application.name.strip().lower()
+        client_name = application.name
         data = get_user_profile(
             user=request.user,
             client_name=client_name,

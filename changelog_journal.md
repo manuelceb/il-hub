@@ -79,3 +79,4 @@ Commit: 806f2de
 
 - Custom error handling for client-server interaction -> api_errors.py details the custom API exceptions to improve the response to clients. Since the token validation relies on Django Oauth Toolkit, these exceptions cover steps after access token is validated by DOT, for example, checking wheter the client is registered and active in the ClientRegistry model. Basic testing was performed with curl, changing token states on django admin panel. In further steps a more comprehensive set of tests will need to be developed.
 
+
