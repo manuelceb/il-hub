@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'hub',
+    "hub.apps.HubConfig",
     'oauth2_provider',
     'library',
     'corsheaders',
@@ -130,7 +130,7 @@ LOGIN_URL = "hub:login"
 LOGIN_REDIRECT_URL = "hub:home"
 LOGOUT_REDIRECT_URL = "library:landing"
 
-SESSION_COOKIE_AGE = 90
+SESSION_COOKIE_AGE = 30
 
 
 HUB_AUTHORIZE_URL = "http://127.0.0.1:8000/o/authorize/"
@@ -175,4 +175,38 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     
+}
+
+AUDIT_LOG_DIR = BASE_DIR / "logs"
+AUDIT_LOG_DIR.mkdir(parents=True, exist_ok=True)
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+
+    "formatters": {
+        "audit_json": {
+            "()": "hub.logging_services.formatters.GdprLogJsonFormatter",
+        },
+    },
+
+    "handlers": {
+        "audit_file": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "level": "INFO",
+            "filename": f"{AUDIT_LOG_DIR}/gdpr_logs.jsonl",
+            "maxBytes": 1048756,
+            "backupCount": 2,
+            "encoding": "utf-8",
+            "formatter": "audit_json",
+        },
+    },
+
+    "loggers": {
+        "ilhub.gdpr": {
+            "handlers": ["audit_file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
 }

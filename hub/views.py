@@ -36,6 +36,9 @@ class HubLoginView(LoginView):
 
 
 
+from .logging_services.events import EventType
+from .logging_services.logging_service import record_gdpr_log_event   
+
 class ContextProfileView(APIView):
     
     http_method_names = ["get"]
@@ -62,6 +65,16 @@ class ContextProfileView(APIView):
             user=request.user,
             client_name=client_name,
             request=request,
+        )
+
+        user_reference = str(request.user.user_uid)
+        record_gdpr_log_event(
+            event_type=EventType.CONTEXT_PROFILE_ACCESSED,
+            outcome="success",
+            actor_type= "oauth_client",
+            actor_reference=client_name,
+            subject_reference=user_reference,
+            client_reference=client_name,
         )
 
         return Response(data)
