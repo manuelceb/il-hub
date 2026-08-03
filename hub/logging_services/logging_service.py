@@ -10,7 +10,6 @@ def record_gdpr_log_event(
     actor_type,
     actor_reference=None,
     subject_reference= None,
-    client_reference=None,
     metadata=None,
 ):
     """
@@ -47,7 +46,6 @@ def record_gdpr_log_event(
         "actor_type": actor_type,
         "actor_reference": actor_reference,
         "subject_reference": subject_reference,
-        "client_reference": client_reference,
         "metadata": event_metadata,
     }
 

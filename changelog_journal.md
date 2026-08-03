@@ -72,11 +72,38 @@ A possible mitigation could be creating a json filed in the database as a back-u
 ---
 
 # v0.2.2
-Date 2026-0718
+Date 2026-07-18
 Commit: 806f2de
 
 ## Added 
 
 - Custom error handling for client-server interaction -> api_errors.py details the custom API exceptions to improve the response to clients. Since the token validation relies on Django Oauth Toolkit, these exceptions cover steps after access token is validated by DOT, for example, checking wheter the client is registered and active in the ClientRegistry model. Basic testing was performed with curl, changing token states on django admin panel. In further steps a more comprehensive set of tests will need to be developed.
 
+---
 
+# v0.2.3
+Date: 2026-07-22
+Commit: 7565d37
+
+## Added
+
+- Looking for improving security aspect, I've implemented changes in ContextProfileView. there are four specifications: 
+    1. Explicitly declaration of http method. GET method is the only allowed. 
+    2. Enforcing authentication through OAuth2, because the endpoint is specifically to be reached by apps (clients)
+    3. Permission is granted only using tokens and scope (checks that the token has the endpoint's required permissions)
+    4. Scope has a strict definition: Only read.
+
+
+# V0.2.4
+Date: 2026-07-26
+Commit: 12f7749
+
+## Added
+
+- A custom logging system implemented to, initially, register the most important events related to GDPR compliance:
+    1. LOGIN_SUCCEEDED --> Resource Owner accessing to IL-Hub
+    2. CONTEXT_PROFILE_ACCESSED --> Client requesting user's data
+    3. PROFILE_UPDATED --> Resource Owner modifying personal data
+  
+  Custom log payload is an effort to be a nice to read JSON file.
+  Actors and outcome types were defined with the aim of achieving a simple logging structure.

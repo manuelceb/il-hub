@@ -20,7 +20,6 @@ class GdprLogJsonFormatter(logging.Formatter):
             "actor_type": gdpr_data.get("actor_type"),
             "actor_reference": gdpr_data.get("actor_reference"),
             "subject_reference": gdpr_data.get("subject_reference"),
-            "client_reference": gdpr_data.get("client_reference"),
             "metadata": gdpr_data.get("metadata", {}),
         }
 

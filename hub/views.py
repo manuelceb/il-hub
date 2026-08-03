@@ -1,5 +1,5 @@
+from django.views.generic import TemplateView
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render
@@ -7,20 +7,14 @@ from .profile_services import get_user_profile
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication,TokenHasScope
 from .models import ClientRegistry
 from .api_errors import ClientInactive, TokenClientError, ClientNotRegistered
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-def home(request):
-    display_name = None
-    if request.user and request.user.is_authenticated:
-        display_name = request.user.email
-    return render(
-        request,
-        "hub/home.html",
-        {
-            "display_name": display_name,
-
-        },
-    )
+class UserDataDashboardView(
+    LoginRequiredMixin,
+    TemplateView,
+):
+    template_name = "hub/home.html"
 
 class HubLoginView(LoginView):
     template_name = "hub/login.html"
@@ -59,7 +53,7 @@ class ContextProfileView(APIView):
 
         if not registry.is_active:
             raise ClientInactive()
-
+    
         client_name = application.name
         data = get_user_profile(
             user=request.user,
@@ -74,7 +68,6 @@ class ContextProfileView(APIView):
             actor_type= "oauth_client",
             actor_reference=client_name,
             subject_reference=user_reference,
-            client_reference=client_name,
         )
 
         return Response(data)
