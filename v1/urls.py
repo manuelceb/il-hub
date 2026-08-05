@@ -5,6 +5,9 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 urlpatterns = [
     path("admin/", admin.site.urls),
 
+    # allauth
+    path('accounts/', include('allauth.urls')),
+
     # Hub OAuth provider endpoints
     path("o/", include("oauth2_provider.urls", namespace="oauth2_provider")),
 

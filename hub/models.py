@@ -56,10 +56,11 @@ class User(AbstractUser):
     """
     username = None
     email = models.EmailField(unique=True)
-    user_uid = models.UUIDField(default=uuid.uuid4,unique=True, editable=False, blank=True)
+    user_uid = models.UUIDField(default=uuid.uuid4,unique=True, editable=False)
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
     bio = models.TextField(blank=True, default="")
+    
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

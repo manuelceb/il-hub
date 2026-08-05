@@ -11,21 +11,24 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env(DEBUG=(bool, False))
+environ.Env.read_env(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-s=e#)kl9&z3kx%6sw(hu940$coj9^xs+uqj_)qls3#-+o4q=9_'
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
-ALLOWED_HOSTS = []
+DEBUG = env("DEBUG")
 
 AUTH_USER_MODEL = "hub.User"
 
@@ -44,6 +47,10 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'drf_spectacular',
+    'allauth',
+    'allauth.account',
+    "allauth.socialaccount",
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
@@ -55,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 
@@ -128,7 +136,7 @@ STATIC_URL = 'static/'
 
 LOGIN_URL = "hub:login"
 LOGIN_REDIRECT_URL = "hub:home"
-LOGOUT_REDIRECT_URL = "library:landing"
+LOGOUT_REDIRECT_URL = "hub:home"
 
 SESSION_COOKIE_AGE = 300
 
@@ -137,12 +145,12 @@ HUB_AUTHORIZE_URL = "http://127.0.0.1:8000/o/authorize/"
 HUB_TOKEN_URL = "http://127.0.0.1:8000/o/token/"
 HUB_REVOKE_TOKEN_URL = "http://127.0.0.1:8000/o/revoke_token/"
 
-HUB_CLIENT_ID = "M3NwNfUD7ZolzA5mb81InHAfzbuZjZrsluFtgjBj"
-HUB_CLIENT_SECRET = "JlulM6yLZFBPiETqPvCRW0qHNPCoZrKs0qcPhmACVcRVUa9mvkHKqAH765vqTxkihB6UmjcOZYftuf3F0zYkkYYqKwlzYWhph7ETy7uIYi2CQ319uxg4DOc7G4X5TA1t"
+HUB_CLIENT_ID = env("HUB_CLIENT_ID")
+HUB_CLIENT_SECRET = env("HUB_CLIENT_SECRET")
 HUB_CONTEXT_PROFILE_URL = "http://127.0.0.1:8000/hub/api/v1/context-profile/"
 
 OAUTH2_PROVIDER = {
-    "ACCESS_TOKEN_EXPIRE_SECONDS": 300,
+    "ACCESS_TOKEN_EXPIRE_SECONDS": 30,
     "SCOPES": {
         "contextual_profile:read": "Read access to contextual profiles"
         },
@@ -210,3 +218,33 @@ LOGGING = {
         },
     },
 }
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        },
+        "OAUTH_PKCE_ENABLED": True,
+        "EMAIL_AUTHENTICATION": True,
+    }
+}
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_SIGNUP_FIELDS = ['email*']
+ACCOUNT_LOGIN_METHODS = {'email'}
+SOCIALACCOUNT_ONLY = False
+ACCOUNT_EMAIL_VERIFICATION = "none"
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
+ACCOUNT_ADAPTER = "hub.adapters.ExistingUserAccountAdapter"
+SOCIALACCOUNT_ADAPTER = "hub.adapters.ExistingUserSocialAccountAdapter"
