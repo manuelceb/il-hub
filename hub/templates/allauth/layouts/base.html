@@ -1,0 +1,38 @@
+{% load i18n %}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>
+        {% block head_title %}
+            IL-Hub
+        {% endblock head_title %}
+    </title>
+
+    {% block extra_head %}
+    {% endblock extra_head %}
+</head>
+
+<body>
+    <main>
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% block content %}
+        {% endblock content %}
+    </main>
+
+    {% block extra_body %}
+    {% endblock extra_body %}
+</body>
+</html>

@@ -107,3 +107,16 @@ Commit: 12f7749
   
   Custom log payload is an effort to be a nice to read JSON file.
   Actors and outcome types were defined with the aim of achieving a simple logging structure.
+
+# V0.2.5
+Date: 2026-08-05
+Commit: ac09cce (social-login branch)
+
+## Added:
+
+- Social login implemented using django-allauth. Aligned with the requirements:
+    1. New users cannot register using Google social login or the classic Django email/password
+    2. Users can sign in using either social login or Django email/password
+
+- The recommended configuration was used since it is not the core part of the project.
+- Allauth templates were overrided

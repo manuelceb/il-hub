@@ -1,34 +1,75 @@
+{% load socialaccount %}
+
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Hub login</title>
+    <title>IL-Hub login</title>
 </head>
 <body>
     <main>
         <h1>IL-Hub login</h1>
 
+        {% if messages %}
+    <div>
+        {% for message in messages %}
+            <p
+                role="alert"
+                {% if message.tags %}
+                    class="{{ message.tags }}"
+                {% endif %}
+            >
+                {{ message }}
+            </p>
+        {% endfor %}
+    </div>
+{% endif %}
+
         {% if user.is_authenticated %}
             <p>
-                User is already logged in to IL-Hub as {{ display_name }}.
+                You are already logged in to IL-Hub as
+                {{ user.get_full_name|default:user.email }}.
             </p>
+
+            {% if request.GET.next %}
+                <p>
+                    <a href="{{ request.GET.next }}">
+                        Continue
+                    </a>
+                </p>
+            {% endif %}
 
             <form method="post" action="{% url 'hub:logout' %}">
                 {% csrf_token %}
                 <button type="submit">Logout</button>
             </form>
-        {% else %}
-            {% if form.errors %}
-                <p>Your email and password did not match. Please try again.</p>
-            {% endif %}
 
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit">Log in</button>
-            </form>
+{% else %}
+    <p>
+        Sign in with your IL-Hub email and password, or use the Google
+        account registered with IL-Hub.
+    </p>
+
+    {% if form.errors %}
+        <p>Your email and password did not match. Please try again.</p>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {% if next %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ next }}">
         {% endif %}
+        <button type="submit">Log in</button>
+    </form>
+
+    <p>Or</p>
+
+    <a href="{% provider_login_url 'google' process='login' next=request.GET.next %}">
+        Sign in with Google
+    </a>
+{% endif %}
     </main>
 </body>
 </html>
