@@ -138,7 +138,7 @@ LOGIN_URL = "hub:login"
 LOGIN_REDIRECT_URL = "hub:home"
 LOGOUT_REDIRECT_URL = "hub:home"
 
-SESSION_COOKIE_AGE = 300
+SESSION_COOKIE_AGE = 30
 
 
 HUB_AUTHORIZE_URL = "http://127.0.0.1:8000/o/authorize/"
