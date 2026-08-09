@@ -16,6 +16,13 @@ class UserDataDashboardView(
 ):
     template_name = "hub/home.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        display_name = self.request.user.email
+        context["display_name"] = display_name
+        return context
+
+
 class HubLoginView(LoginView):
     template_name = "hub/login.html"
 
