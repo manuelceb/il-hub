@@ -13,15 +13,6 @@ class ExistingUserAccountAdapter(DefaultAccountAdapter):
 
 class ExistingUserSocialAccountAdapter(DefaultSocialAccountAdapter):
 
-    def pre_social_login(self, request, sociallogin):
-        """
-        Extracting picture from Google profile recevied. 
-        Storing only strictly required data, aligned with GDPR principles.
-        """
-        extra_data = sociallogin.account.extra_data
-        extra_data.pop('picture', None)
-        sociallogin.account.extra_data = extra_data
-
     def is_open_for_signup(self, request, sociallogin):
         """
         Allow Google authentication only for existing IL-Hub users.
@@ -36,8 +27,6 @@ class ExistingUserSocialAccountAdapter(DefaultSocialAccountAdapter):
         )
 
         login_url = reverse("hub:login")
-
-        # Preserve the original destination, such as /o/authorize/.
         next_url = sociallogin.get_redirect_url(request)
 
         if next_url:
