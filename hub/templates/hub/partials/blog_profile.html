@@ -27,4 +27,12 @@
             </ul>
         </dd>
     </dl>
+
+    <button
+    type="button"
+    hx-get="{% url 'hub:blog-profile-edit' %}"
+    hx-target="#profile-content"
+    hx-swap="innerHTML">
+    Edit profile
+</button>
 </section>

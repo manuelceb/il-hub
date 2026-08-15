@@ -13,4 +13,6 @@ urlpatterns = [
     path("profiles/library", views.LibraryProfileView.as_view(), name="library-profile"),
     path("profiles/blog", views.BlogProfileView.as_view(), name="blog-profile"),
     path("profiles/hub", views.HubProfileView.as_view(), name="hub-profile"),
+    path("profiles/library/edit", views.LibraryProfileEditView.as_view(), name="library-profile-edit"),
+    path("profiles/blog/edit", views.LibraryProfileEditView.as_view(), name="blog-profile-edit"),
 ]

@@ -1,13 +1,14 @@
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, UpdateView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.views import LoginView
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .profile_services import get_user_profile
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication,TokenHasScope
 from .models import ClientRegistry, LibraryContext, BlogContext
 from .api_errors import ClientInactive, TokenClientError, ClientNotRegistered
 from django.contrib.auth.mixins import LoginRequiredMixin
+from .forms import LibraryContextForm, BlogContextForm
 
 
 class UserDataDashboardView(
@@ -98,3 +99,44 @@ class BlogProfileView(LoginRequiredMixin, TemplateView,):
 
 class HubProfileView(LoginRequiredMixin, TemplateView):
     template_name = "hub/partials/hub_profile.html"
+
+
+class LibraryProfileEditView(LoginRequiredMixin, UpdateView):
+    model = LibraryContext
+    form_class = LibraryContextForm
+    template_name = "hub/partials/library_profile_form.html"
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(
+            LibraryContext,
+            user=self.request.user,
+        )
+
+    def form_valid(self, form):
+        self.object = form.save()
+
+        return render(
+            self.request,
+            "hub/partials/library_profile.html",
+            {"profile": self.object},
+        )
+
+class BlogProfileEditView(LoginRequiredMixin, UpdateView):
+    model = BlogContext
+    form_class = BlogContextForm
+    template_name = "hub/partials/blog_profile_form.html"
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(
+            BlogContext,
+            user=self.request.user,
+        )
+
+    def form_valid(self, form):
+        self.object = form.save()
+
+        return render(
+            self.request,
+            "hub/partials/blog_profile.html",
+            {"profile": self.object},
+        )
