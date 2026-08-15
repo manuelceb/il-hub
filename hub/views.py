@@ -5,7 +5,7 @@ from django.contrib.auth.views import LoginView
 from django.shortcuts import render
 from .profile_services import get_user_profile
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication,TokenHasScope
-from .models import ClientRegistry
+from .models import ClientRegistry, LibraryContext, BlogContext
 from .api_errors import ClientInactive, TokenClientError, ClientNotRegistered
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -78,3 +78,23 @@ class ContextProfileView(APIView):
         )
 
         return Response(data)
+
+class LibraryProfileView(LoginRequiredMixin, TemplateView):
+
+    template_name = "hub/partials/library_profile.html"
+
+    def get_context_data(self, **kwargs):
+        context =  super().get_context_data(**kwargs)
+        context["profile"] = LibraryContext.objects.get(user=self.request.user)
+        return context
+    
+class BlogProfileView(LoginRequiredMixin, TemplateView,):
+    template_name = "hub/partials/blog_profile.html"
+
+    def get_context_data(self, **kwargs):
+        context =  super().get_context_data(**kwargs)
+        context["profile"] = BlogContext.objects.get(user=self.request.user)
+        return context
+
+class HubProfileView(LoginRequiredMixin, TemplateView):
+    template_name = "hub/partials/hub_profile.html"

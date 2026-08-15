@@ -1,30 +1,81 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Hub</title>
-</head>
-<body>
-    <main>
-        <h1>IL-Hub</h1>
+{% load static %}
 
-        {% if user.is_authenticated %}
+<!DOCTYPE html>
+<html lang="en">
+    <script
+    src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js"
+    integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V"
+    crossorigin="anonymous">
+</script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>IL-Hub | Personal Data</title>
+</head>
+
+<body>
+
+<main>
+
+    {% if user.is_authenticated %}
+
+        <header>
+            <h1>Personal Data Management</h1>
+
             <p>
-                User is logged in as {{ display_name }}.
+                User: {{ display_name }}.
             </p>
 
             <form method="post" action="{% url 'hub:logout' %}">
                 {% csrf_token %}
                 <button type="submit">Logout</button>
             </form>
-        {% else %}
-            <p>User is not logged in</p>
+        </header>
 
-            <a href="{% url 'hub:login' %}">
-                Login to IL-Hub
-            </a>
-        {% endif %}
-    </main>
+        <hr>
+
+            <nav>
+                <button
+                    type="button"
+                    hx-get="{% url 'hub:hub-profile' %}"
+                    hx-target="#profile-content"
+                    hx-swap="innerHTML">
+                    Hub Profile
+                </button>
+                <button
+                    type="button"
+                    hx-get="{% url 'hub:library-profile' %}"
+                    hx-target="#profile-content"
+                    hx-swap="innerHTML">
+                    Library
+                </button>
+
+                <button
+                    type="button"
+                    hx-get="{% url 'hub:blog-profile' %}"
+                    hx-target="#profile-content"
+                    hx-swap="innerHTML">
+                    Blog
+                </button>
+            </nav>
+                        <div id="profile-content">
+
+                {% include "hub/partials/hub_profile.html" %}
+
+            </div>  
+
+    {% else %}
+
+        <p>User is not logged in.</p>
+
+        <a href="{% url 'hub:login' %}">
+            Login to IL-Hub
+        </a>
+
+    {% endif %}
+
+</main>
+
 </body>
 </html>

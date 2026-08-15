@@ -138,7 +138,7 @@ LOGIN_URL = "hub:login"
 LOGIN_REDIRECT_URL = "hub:home"
 LOGOUT_REDIRECT_URL = "hub:home"
 
-SESSION_COOKIE_AGE = 30
+SESSION_COOKIE_AGE = 900
 
 
 HUB_AUTHORIZE_URL = "http://127.0.0.1:8000/o/authorize/"
@@ -150,7 +150,7 @@ HUB_CLIENT_SECRET = env("HUB_CLIENT_SECRET")
 HUB_CONTEXT_PROFILE_URL = "http://127.0.0.1:8000/hub/api/v1/context-profile/"
 
 OAUTH2_PROVIDER = {
-    "ACCESS_TOKEN_EXPIRE_SECONDS": 30,
+    "ACCESS_TOKEN_EXPIRE_SECONDS": 300,
     "SCOPES": {
         "contextual_profile:read": "Read access to contextual profiles"
         },

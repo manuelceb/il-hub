@@ -10,4 +10,7 @@ urlpatterns = [
     path("login/", views.HubLoginView.as_view(), name="login"),
     path("logout/", auth_views.LogoutView.as_view(next_page="hub:home"), name="logout"),
     path("api/v1/context-profile/", views.ContextProfileView.as_view(), name="context_profile"),
+    path("profiles/library", views.LibraryProfileView.as_view(), name="library-profile"),
+    path("profiles/blog", views.BlogProfileView.as_view(), name="blog-profile"),
+    path("profiles/hub", views.HubProfileView.as_view(), name="hub-profile"),
 ]

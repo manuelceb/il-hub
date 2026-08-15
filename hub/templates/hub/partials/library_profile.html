@@ -1,0 +1,35 @@
+<section>
+    <h3>Library Profile</h3>
+    <p>
+        Nickname: {{profile.nickname}} <br>
+        Email notifications: {{profile.email_notifications}}
+    </p>
+
+    <dl>
+        {% if profile.photo_path %}
+            <dt>Profile image</dt>
+            <dd>
+                <img
+                    src="{{ profile.photo_path.url }}"
+                    alt="Library profile image"
+                    width="150">
+            </dd>
+        {% endif %}
+
+
+        <dt>Interest topics</dt>
+        <dd>
+            {% if profile.interest_topics.all %}
+                <ul>
+                    {% for topic in profile.interest_topics.all %}
+                        <li>{{ topic }}</li>
+                    {% empty %}
+                        <li>No interest topics registered.</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                No interest topics registered.
+            {% endif %}
+        </dd>
+    </dl>
+</section>

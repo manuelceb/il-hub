@@ -1,0 +1,30 @@
+<section>
+    <h3>Blog Profile</h3>
+
+    <dl>
+        <p>
+            Nickname: {{profile.nickname}}
+        </p>
+
+        {% if profile.photo_path %}
+            <dt>Profile image</dt>
+            <dd>
+                <img
+                    src="{{ profile.photo_path.url }}"
+                    alt="Blog profile image"
+                    width="150">
+            </dd>
+        {% endif %}
+
+        <dt>Topics</dt>
+        <dd>
+            <ul>
+                {% for topic in profile.topics.all %}
+                    <li>{{ topic }}</li>
+                {% empty %}
+                    <li>No topics registered.</li>
+                {% endfor %}
+            </ul>
+        </dd>
+    </dl>
+</section>
