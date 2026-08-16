@@ -1,81 +1,137 @@
-{% load static %}
+{% extends "base.html" %}
 
-<!DOCTYPE html>
-<html lang="en">
+{% block title %}IL-Hub - Profile Data Management{% endblock %}
+
+{% block extra_head %}
     <script
-    src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js"
-    integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V"
-    crossorigin="anonymous">
+        src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js"
+        integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V"
+        crossorigin="anonymous">
+    </script>
+{% endblock %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-10">
+
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4">
+
+                    <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+                        <div>
+                            <h1 class="h3 fw-semibold mb-2">
+                                Profile Data Management
+                            </h1>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-bottom">
+                    <ul class="nav nav-pills gap-2" role="tablist">
+
+                        <li class="nav-item" role="presentation">
+                            <button
+                                type="button"
+                                class="nav-link active profile-tab"
+                                hx-get="{% url 'hub:hub_profile' %}"
+                                hx-target="#profile-content"
+                                hx-swap="innerHTML"
+                            >
+                                Main
+                            </button>
+                        </li>
+
+                        <li class="nav-item" role="presentation">
+                            <button
+                                type="button"
+                                class="nav-link profile-tab"
+                                hx-get="{% url 'hub:library_profile' %}"
+                                hx-target="#profile-content"
+                                hx-swap="innerHTML"
+                            >
+                                Library
+                            </button>
+                        </li>
+
+                        <li class="nav-item" role="presentation">
+                            <button
+                                type="button"
+                                class="nav-link profile-tab"
+                                hx-get="{% url 'hub:blog_profile' %}"
+                                hx-target="#profile-content"
+                                hx-swap="innerHTML"
+                            >
+                                Blog
+                            </button>
+                        </li>
+
+                    </ul>
+                </div>
+
+                <div class="card-body p-4">
+                    <div id="profile-content">
+                        {% include "hub/partials/hub_profile.html" %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% else %}
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-5">
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4 p-md-5 text-center">
+
+                    <h1 class="h4 fw-semibold mb-3">
+                        IL-Hub
+                    </h1>
+
+                    <p class="text-muted mb-4">
+                        You must be logged in to manage your profile data.
+                    </p>
+
+                    <a href="{% url 'hub:login' %}" class="btn btn-primary w-100">
+                        Login to IL-Hub
+                    </a>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.body.addEventListener("htmx:afterRequest", function (event) {
+        const clickedElement = event.detail.elt;
+
+        if (!clickedElement.classList.contains("profile-tab")) {
+            return;
+        }
+
+        if (!event.detail.successful) {
+            return;
+        }
+
+        document.querySelectorAll(".profile-tab").forEach(function (tab) {
+            tab.classList.remove("active");
+        });
+
+        clickedElement.classList.add("active");
+    });
 </script>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>IL-Hub | Personal Data</title>
-</head>
-
-<body>
-
-<main>
-
-    {% if user.is_authenticated %}
-
-        <header>
-            <h1>Personal Data Management</h1>
-
-            <p>
-                User: {{ display_name }}.
-            </p>
-
-            <form method="post" action="{% url 'hub:logout' %}">
-                {% csrf_token %}
-                <button type="submit">Logout</button>
-            </form>
-        </header>
-
-        <hr>
-
-            <nav>
-                <button
-                    type="button"
-                    hx-get="{% url 'hub:hub-profile' %}"
-                    hx-target="#profile-content"
-                    hx-swap="innerHTML">
-                    Hub Profile
-                </button>
-                <button
-                    type="button"
-                    hx-get="{% url 'hub:library-profile' %}"
-                    hx-target="#profile-content"
-                    hx-swap="innerHTML">
-                    Library
-                </button>
-
-                <button
-                    type="button"
-                    hx-get="{% url 'hub:blog-profile' %}"
-                    hx-target="#profile-content"
-                    hx-swap="innerHTML">
-                    Blog
-                </button>
-            </nav>
-                        <div id="profile-content">
-
-                {% include "hub/partials/hub_profile.html" %}
-
-            </div>  
-
-    {% else %}
-
-        <p>User is not logged in.</p>
-
-        <a href="{% url 'hub:login' %}">
-            Login to IL-Hub
-        </a>
-
-    {% endif %}
-
-</main>
-
-</body>
-</html>
+{% endblock %}

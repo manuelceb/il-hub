@@ -1,75 +1,118 @@
+{% extends "base.html" %}
 {% load socialaccount %}
 
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>IL-Hub login</title>
-</head>
-<body>
-    <main>
-        <h1>IL-Hub login</h1>
+{% block title %}IL-Hub - Login{% endblock %}
 
-        {% if messages %}
-    <div>
-        {% for message in messages %}
-            <p
-                role="alert"
-                {% if message.tags %}
-                    class="{{ message.tags }}"
-                {% endif %}
-            >
-                {{ message }}
-            </p>
-        {% endfor %}
-    </div>
-{% endif %}
+{% block content %}
 
-        {% if user.is_authenticated %}
-            <p>
-                You are already logged in to IL-Hub as
-                {{ user.get_full_name|default:user.email }}.
-            </p>
+<div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-5">
 
-            {% if request.GET.next %}
-                <p>
-                    <a href="{{ request.GET.next }}">
-                        Continue
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4 p-md-5">
+
+                <div class="text-center mb-4">
+                    <h1 class="h3 fw-semibold mb-1">IL-Hub</h1>
+                </div>
+
+                {% if user.is_authenticated %}
+
+                    <div class="alert alert-info mb-4" role="alert">
+                        You are already logged in as
+                        <strong>{{ user.get_full_name|default:user.email }}</strong>.
+                    </div>
+
+                    {% if request.GET.next %}
+                        <a
+                            href="{{ request.GET.next }}"
+                            class="btn btn-primary w-100 mb-3"
+                        >
+                            Continue
+                        </a>
+                    {% endif %}
+
+                    <form method="post" action="{% url 'hub:logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-secondary w-100">
+                            Logout
+                        </button>
+                    </form>
+
+                {% else %}
+
+                    <div class="mb-4">
+                        <h2 class="h5 fw-semibold mb-2">Login</h2>
+                    </div>
+
+                    {% if form.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            Your email and password did not match. Please try again.
+                        </div>
+                    {% endif %}
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        {% for field in form %}
+                            <div class="mb-3">
+                                <label
+                                    for="{{ field.id_for_label }}"
+                                    class="form-label"
+                                >
+                                    {{ field.label }}
+                                </label>
+
+                                {{ field }}
+
+                                {% if field.help_text %}
+                                    <div class="form-text">
+                                        {{ field.help_text }}
+                                    </div>
+                                {% endif %}
+
+                                {% for error in field.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+
+                        {% if next %}
+                            <input
+                                type="hidden"
+                                name="{{ redirect_field_name }}"
+                                value="{{ next }}"
+                            >
+                        {% endif %}
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            Log in
+                        </button>
+                    </form>
+
+                    <div class="position-relative text-center my-4">
+                        <hr>
+                        <span
+                            class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small"
+                        >
+                            or
+                        </span>
+                    </div>
+
+                    <a
+                        href="{% provider_login_url 'google' process='login' next=request.GET.next %}"
+                        class="btn btn-outline-dark w-100"
+                    >
+                        Sign in with Google
                     </a>
-                </p>
-            {% endif %}
 
-            <form method="post" action="{% url 'hub:logout' %}">
-                {% csrf_token %}
-                <button type="submit">Logout</button>
-            </form>
+                {% endif %}
 
-{% else %}
-    <p>
-        Sign in with your IL-Hub email and password, or use the Google
-        account registered with IL-Hub.
-    </p>
+            </div>
+        </div>
 
-    {% if form.errors %}
-        <p>Your email and password did not match. Please try again.</p>
-    {% endif %}
+    </div>
+</div>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        {% if next %}
-            <input type="hidden" name="{{ redirect_field_name }}" value="{{ next }}">
-        {% endif %}
-        <button type="submit">Log in</button>
-    </form>
-
-    <p>Or</p>
-
-    <a href="{% provider_login_url 'google' process='login' next=request.GET.next %}">
-        Sign in with Google
-    </a>
-{% endif %}
-    </main>
-</body>
-</html>
+{% endblock %}

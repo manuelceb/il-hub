@@ -8,7 +8,7 @@ from oauth2_provider.contrib.rest_framework import OAuth2Authentication,TokenHas
 from .models import ClientRegistry, LibraryContext, BlogContext
 from .api_errors import ClientInactive, TokenClientError, ClientNotRegistered
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import LibraryContextForm, BlogContextForm
+from .forms import LibraryContextForm, BlogContextForm, HubAuthenticationForm
 
 
 class UserDataDashboardView(
@@ -26,7 +26,8 @@ class UserDataDashboardView(
 
 class HubLoginView(LoginView):
     template_name = "hub/login.html"
-
+    authentication_form = HubAuthenticationForm
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         display_name = None
