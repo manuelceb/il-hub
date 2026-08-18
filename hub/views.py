@@ -9,12 +9,11 @@ from .models import ClientRegistry, LibraryContext, BlogContext
 from .api_errors import ClientInactive, TokenClientError, ClientNotRegistered
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import LibraryContextForm, BlogContextForm, HubAuthenticationForm
+from .logging_services.events import EventType
+from .logging_services.logging_service import record_gdpr_log_event   
 
 
-class UserDataDashboardView(
-    LoginRequiredMixin,
-    TemplateView,
-):
+class UserDataDashboardView(LoginRequiredMixin, TemplateView,):
     template_name = "hub/home.html"
 
     def get_context_data(self, **kwargs):
@@ -36,11 +35,6 @@ class HubLoginView(LoginView):
             
         context["display_name"] = display_name
         return context
-
-
-
-from .logging_services.events import EventType
-from .logging_services.logging_service import record_gdpr_log_event   
 
 class ContextProfileView(APIView):
     
@@ -72,7 +66,7 @@ class ContextProfileView(APIView):
 
         user_reference = str(request.user.user_uid)
         record_gdpr_log_event(
-            event_type=EventType.CONTEXT_PROFILE_ACCESSED,
+            event_type=EventType.PROFILE_ACCESSED,
             outcome="success",
             actor_type= "oauth_client",
             actor_reference=client_name,
@@ -135,6 +129,18 @@ class BlogProfileEditView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         self.object = form.save()
+        user = self.request.user
+        request = self.request
+        user_uid = getattr(user, "user_uid", None)
+        user_uid = str(user_uid)
+        record_gdpr_log_event(
+            event_type=EventType.PROFILE_UPDATED,
+            outcome="success",
+            actor_type= "user",
+            actor_reference=user_uid,
+            subject_reference=user_uid,
+            metadata={"device":request.META.get('HTTP_USER_AGENT', ''),}
+        )
 
         return render(
             self.request,

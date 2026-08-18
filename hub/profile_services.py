@@ -28,7 +28,7 @@ def get_user_profile(user, client_name, request=None):
     if prefetch_fields:
         queryset = queryset.prefetch_related(*prefetch_fields)
 
-    user_profile = queryset.get()
+    user_profile = queryset.first()
 
     if user_profile is None:
         raise ContextualProfileNotFound()

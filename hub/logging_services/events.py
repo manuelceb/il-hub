@@ -6,7 +6,7 @@ class EventType(str, Enum):
     A strict catalogue of GDPR-relevant event types. This prevents of getting event types out of control.
     """
     LOGIN_SUCCEEDED = "auth.login_succeeded"
-    CONTEXT_PROFILE_ACCESSED = "profile.accessed"
+    PROFILE_ACCESSED = "profile.accessed"
     PROFILE_UPDATED = "profile.updated"
 
     def __str__(self):

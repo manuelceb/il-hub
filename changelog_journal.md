@@ -102,7 +102,7 @@ Commit: 12f7749
 
 - A custom logging system implemented to, initially, register the most important events related to GDPR compliance:
     1. LOGIN_SUCCEEDED --> Resource Owner accessing to IL-Hub
-    2. CONTEXT_PROFILE_ACCESSED --> Client requesting user's data
+    2. PROFILE_ACCESSED --> Client requesting user's data
     3. PROFILE_UPDATED --> Resource Owner modifying personal data
   
   Custom log payload is an effort to be a nice to read JSON file.
