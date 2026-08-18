@@ -1,0 +1,92 @@
+<section>
+    <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
+        <div>
+            <h2 class="h4 fw-semibold mb-1">Library Profile</h2>
+            <p class="text-muted mb-0">
+                This is your profile shared with the University Online Library.
+            </p>
+        </div>
+
+        <div>
+            <button
+                type="button"
+                class="btn btn-primary"
+                hx-get="{% url 'hub:library_profile_edit' %}"
+                hx-target="#profile-content"
+                hx-swap="innerHTML"
+            >
+                Edit profile
+            </button>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-12 col-lg-4">
+            <div class="border rounded-3 p-3 h-100 bg-light">
+                <h3 class="h6 text-uppercase text-muted mb-3">
+                    Profile image
+                </h3>
+
+                {% if profile.photo_path %}
+                    <img
+                        src="{{ profile.photo_path.url }}"
+                        alt="Library profile image"
+                        class="img-thumbnail"
+                        style="max-width: 160px;"
+                    >
+                {% else %}
+                    <p class="text-muted mb-0">
+                        No profile image registered.
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-8">
+            <div class="border rounded-3 p-3 h-100">
+                <h3 class="h6 text-uppercase text-muted mb-3">
+                    Profile details
+                </h3>
+
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Nickname</dt>
+                    <dd class="col-sm-8">
+                        {{ profile.nickname|default:"Not registered" }}
+                    </dd>
+
+                    <dt class="col-sm-4">Email notifications</dt>
+                    <dd class="col-sm-8">
+                        {% if profile.email_notifications %}
+                            <span class="badge text-bg-success">Enabled</span>
+                        {% else %}
+                            <span class="badge text-bg-secondary">Disabled</span>
+                        {% endif %}
+                    </dd>
+
+                    <dt class="col-sm-4">Interest topics</dt>
+                    <dd class="col-sm-8">
+                        {% if profile.interest_topics.all %}
+                            <div class="d-flex flex-wrap gap-2">
+                                {% for topic in profile.interest_topics.all %}
+                                    <span class="badge rounded-pill text-bg-light border">
+                                        {{ topic }}
+                                    </span>
+                                {% empty %}
+                                    <span class="text-muted">
+                                        No interest topics registered.
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <span class="text-muted">
+                                No interest topics registered.
+                            </span>
+                        {% endif %}
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
+    </div>
+</section>

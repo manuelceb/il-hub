@@ -1,0 +1,31 @@
+<section>
+    <div class="mb-4">
+        <h2 class="h4 fw-semibold mb-1">Main Profile</h2>
+        <p class="text-muted mb-0">
+            Profile with legal data
+        </p>
+    </div>
+
+    <div class="border rounded-3 p-3">
+        <h3 class="h6 text-uppercase text-muted mb-3">
+            Account details
+        </h3>
+
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Email</dt>
+            <dd class="col-sm-9">
+                {{ user.email }}
+            </dd>
+
+            <dt class="col-sm-3">First name</dt>
+            <dd class="col-sm-9">
+                {{ user.first_name|default:"Not registered" }}
+            </dd>
+
+            <dt class="col-sm-3">Last name</dt>
+            <dd class="col-sm-9">
+                {{ user.last_name|default:"Not registered" }}
+            </dd>
+        </dl>
+    </div>
+</section>
