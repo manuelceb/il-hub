@@ -109,6 +109,20 @@ class LibraryProfileEditView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         self.object = form.save()
+        user = self.request.user
+        request = self.request
+        user_uid = getattr(user, "user_uid", None)
+        user_uid = str(user_uid)
+        record_gdpr_log_event(
+                    event_type=EventType.PROFILE_UPDATED,
+                    outcome="success",
+                    actor_type= "user",
+                    actor_reference=user_uid,
+                    subject_reference=user_uid,
+                    metadata={"device":request.META.get('HTTP_USER_AGENT', ''),
+                                "client profile updated": "library",
+                              }
+        )
 
         return render(
             self.request,
@@ -139,7 +153,9 @@ class BlogProfileEditView(LoginRequiredMixin, UpdateView):
             actor_type= "user",
             actor_reference=user_uid,
             subject_reference=user_uid,
-            metadata={"device":request.META.get('HTTP_USER_AGENT', ''),}
+            metadata={"device":request.META.get('HTTP_USER_AGENT', ''),
+                       "client profile updated": "library",
+                      }
         )
 
         return render(
