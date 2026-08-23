@@ -110,7 +110,7 @@ Commit: 12f7749
 
 # V0.2.5
 Date: 2026-08-05
-Commit: ac09cce (social-login branch)
+Commit: 00b2b2b (social-login branch)
 
 ## Added:
 
@@ -120,3 +120,33 @@ Commit: ac09cce (social-login branch)
 
 - The recommended configuration was used since it is not the core part of the project.
 - Allauth templates were overrided
+
+# V0.2.6
+Date: 2026-08-18
+Commit: a6f5de0 (frontend branch)
+
+## Added:
+
+- Full IL-Hub dashboard frontend 
+- Profile update forms.
+- Implementation with Django templates and HTMX.
+
+# V0.2.7
+Date: 2026-08-18
+Commit: 4dc6540
+
+## Added:
+
+- A set of tests implemented for system assesment. It includes three main aspects:
+    1. API profile retrieval
+    2. user interface, using Selenium
+    3. user authentication (Google social auth excluded)
+
+# V0.2.8
+Date: 2026-08-22
+Commit: 7c62384
+
+## Added:
+
+- script traceability_parser.py that helps to test the traceability of audit logs. 
+
