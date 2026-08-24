@@ -58,7 +58,8 @@ class User(AbstractUser):
     user_uid = models.UUIDField(default=uuid.uuid4,unique=True, editable=False)
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
-    bio = models.TextField(blank=True, default="")
+    privacy_notice_accepted = models.BooleanField(default=False)
+    privacy_notice_accepted_at = models.DateTimeField(null=True, blank=True)
     
 
     USERNAME_FIELD = "email"

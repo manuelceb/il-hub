@@ -12,6 +12,65 @@
 
 {% block content %}
 
+{% if not request.user.privacy_notice_accepted %}
+
+<div class="modal fade"
+     id="privacyNoticeModal"
+     tabindex="-1"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     aria-labelledby="privacyNoticeModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="privacyNoticeModalLabel">
+                    Privacy Notice
+                </h5>
+            </div>
+
+            <div class="modal-body">
+                <p>
+                    IL-Hub processes your personal data to provide
+                    authentication and profile information
+                    to authorised clients.
+                </p>
+
+                <p>
+                    By continuing, you acknowledge that you have read
+                    this privacy notice.
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                <form method="post"
+                      action="{% url 'hub:accept_privacy_notice' %}">
+                    {% csrf_token %}
+
+                    <button type="submit" class="btn btn-primary">
+                        Acknowledge and continue
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const privacyModal = new bootstrap.Modal(
+            document.getElementById("privacyNoticeModal")
+        );
+
+        privacyModal.show();
+    });
+</script>
+
+{% endif %}
+
 {% if user.is_authenticated %}
 
     <div class="row justify-content-center">

@@ -7,6 +7,7 @@ app_name = "hub"
 
 urlpatterns = [
     path("", views.UserDataDashboardView.as_view(), name="home"),
+    path("privacy/agreement/", views.accept_privacy_notice, name ="accept_privacy_notice"),
     path("login/", views.HubLoginView.as_view(), name="login"),
     path("logout/", auth_views.LogoutView.as_view(next_page="hub:home"), name="logout"),
     path("api/v1/context-profile/", views.ContextProfileView.as_view(), name="context_profile"),

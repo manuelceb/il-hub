@@ -32,7 +32,7 @@ class HubLoginView(LoginView):
         display_name = None
         if self.request.user and self.request.user.is_authenticated:
             display_name = self.request.user.email
-            
+
         context["display_name"] = display_name
         return context
 
@@ -163,3 +163,22 @@ class BlogProfileEditView(LoginRequiredMixin, UpdateView):
             "hub/partials/blog_profile.html",
             {"profile": self.object},
         )
+
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+from django.utils import timezone
+
+@login_required
+@require_POST
+def accept_privacy_notice(request):
+    request.user.privacy_notice_accepted = True
+    request.user.privacy_notice_accepted_at = timezone.now()
+    request.user.save(
+        update_fields = [
+            "privacy_notice_accepted",
+            "privacy_notice_accepted_at",            
+        ]
+    )
+
+    return redirect("hub:home")
