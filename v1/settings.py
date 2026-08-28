@@ -189,6 +189,22 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'API for contextual profile retrieval in federated systems',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+    'APPEND_COMPONENTS': {
+        'securitySchemes': {
+            'oauth2': {
+                'type': 'oauth2',
+                'flows': {
+                    'authorizationCode': {
+                        'authorizationUrl': '/o/authorize/',
+                        'tokenUrl': '/o/token/',
+                        'scopes': {
+                            'contextual_profile:read': 'Read contextual profiles',
+                        },
+                    },
+                },
+            },
+        },
+    },
     
 }
 
