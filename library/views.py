@@ -76,7 +76,7 @@ def login_with_hub(request):
 
     params = {
         "response_type": "code",
-        "client_id": settings.HUB_CLIENT_ID,
+        "client_id": settings.LIBRARY_CLIENT_ID,
         "redirect_uri": settings.LIBRARY_REDIRECT_URI,
         "scope": "contextual_profile:read",
         "state": state,
@@ -120,8 +120,8 @@ def oauth_callback(request):
             "grant_type": "authorization_code",
             "code": code,
             "redirect_uri": settings.LIBRARY_REDIRECT_URI,
-            "client_id": settings.HUB_CLIENT_ID,
-            "client_secret": settings.HUB_CLIENT_SECRET,
+            "client_id": settings.LIBRARY_CLIENT_ID,
+            "client_secret": settings.LIBRARY_CLIENT_SECRET,
             "code_verifier": code_verifier,
         },
         timeout=10,
@@ -184,8 +184,8 @@ def logout_from_library(request):
             settings.HUB_REVOKE_TOKEN_URL,
             data={
                 "token": token,
-                "client_id": settings.HUB_CLIENT_ID,
-                "client_secret": settings.HUB_CLIENT_SECRET,
+                "client_id": settings.LIBRARY_CLIENT_ID,
+                "client_secret": settings.LIBRARY_CLIENT_SECRET,
             },
             timeout=10,
         )
