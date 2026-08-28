@@ -18,6 +18,9 @@ urlpatterns = [
     # Library simulated client app
     path("library/", include("library.urls")),
 
+    # Blog simulated client app
+    path("blog/", include("blog.urls")),
+
     path("hub/", include("hub.urls")),
 
     # Open API

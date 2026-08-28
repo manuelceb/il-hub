@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Blog Dashboard</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-secondary shadow-sm">
+    <div class="container">
+
+        <span class="navbar-brand fw-semibold">
+            Blog
+        </span>
+
+        {% if is_logged_in %}
+            <div class="ms-auto d-flex align-items-center gap-3">
+                <span class="text-white">
+                    {{ context_profile.profile.nickname }}
+                </span>
+                <form method="post" action="{% url 'blog:logout' %}" class="m-0">
+                    {% csrf_token %}
+                    <button
+                        type="submit"
+                        class="btn btn-outline-light btn-sm">
+                        Logout
+                    </button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+</nav>
+
+<div class="container py-5">
+
+{% if is_logged_in %}
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <h1 class="h3 mb-2">
+                Dashboard
+            </h1>
+            <p class="text-muted mb-0">
+                The Blog client successfully authenticated the user through
+                <strong>IL-Hub</strong> and retrieved a contextual profile.
+            </p>
+            <p class="text-muted mb-0">
+                Data such as Interest topics received can be used to improve user experience and recommendations
+            </p>
+        </div>
+    </div>
+
+    {% if context_profile %}
+
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body text-center">
+
+                        {% if context_profile.profile.photo_path %}
+                            <img
+                                src="{{ context_profile.profile.photo_path }}"
+                                class="img-thumbnail rounded-circle mb-3"
+                                style="width:160px;height:160px;object-fit:cover;"
+                                alt="Profile photo">
+                        {% endif %}
+
+                        <h4 class="mb-1">
+                            {{ context_profile.profile.nickname }}
+                        </h4>
+
+                        <p class="text-muted">
+                            Library User
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        Profile
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tr>
+                                <th width="35%">
+                                    Nickname
+                                </th>
+                                <td>{{ context_profile.profile.nickname }}</td>
+                            </tr>
+                            <tr>
+                                <th>Email notifications</th>
+                                <td>
+                                    {% if context_profile.profile.email_notifications %}
+                                        Enabled
+                                    {% else %}
+                                        Disabled
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Interest topics</th>
+                                <td>
+
+                                    {% for topic in context_profile.profile.interest_topics %}
+                                        <span class="badge bg-success me-1">
+                                            {{ topic }}
+                                        </span>
+                                    {% empty %}
+                                        <span class="text-muted">
+                                            No interests
+                                        </span>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+
+        <div class="alert alert-warning">
+            No contextual profile was received from IL-Hub.
+        </div>
+
+    {% endif %}
+
+{% else %}
+
+    <div class="card shadow-sm">
+        <div class="card-body text-center p-5">
+            <h2 class="mb-3">
+                User not authenticated
+            </h2>
+            <p class="text-muted">
+                Please authenticate through IL-Hub.
+            </p>
+            <a
+                href="{% url 'blog:login_with_hub' %}"
+                class="btn btn-secondary">
+                Login with IL-Hub
+            </a>
+        </div>
+    </div>
+
+{% endif %}
+
+{% if error %}
+    <div class="alert alert-danger mt-4">
+        {{ error }}
+    </div>
+{% endif %}
+
+</div>
+
+</body>
+</html>

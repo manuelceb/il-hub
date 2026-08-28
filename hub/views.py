@@ -42,11 +42,11 @@ class ContextProfileView(APIView):
     authentication_classes = [OAuth2Authentication]
     permission_classes = [TokenHasScope]
     required_scopes = ["contextual_profile:read"]
-
+    
     def get(self, request):
         access_token = request.auth
         application = getattr(access_token, "application", None)
-
+        print(f"este essss: {application.client_configuration}")
         if application is None:
             raise TokenClientError()
         try:

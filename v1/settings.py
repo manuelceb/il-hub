@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "hub.apps.HubConfig",
     'oauth2_provider',
     'library',
+    'blog',
     'corsheaders',
     'rest_framework',
     'drf_spectacular',
@@ -150,10 +151,12 @@ HUB_REVOKE_TOKEN_URL = "http://127.0.0.1:8000/o/revoke_token/"
 
 LIBRARY_CLIENT_ID = env("LIBRARY_CLIENT_ID")
 LIBRARY_CLIENT_SECRET = env("LIBRARY_CLIENT_SECRET")
+BLOG_CLIENT_ID = env("BLOG_CLIENT_ID")
+BLOG_CLIENT_SECRET = env("BLOG_CLIENT_SECRET")
 HUB_CONTEXT_PROFILE_URL = "http://127.0.0.1:8000/hub/api/v1/context-profile/"
 
 OAUTH2_PROVIDER = {
-    "ACCESS_TOKEN_EXPIRE_SECONDS": 300,
+    "ACCESS_TOKEN_EXPIRE_SECONDS": 60,
     "SCOPES": {
         "contextual_profile:read": "Read access to contextual profiles"
         },
@@ -165,6 +168,7 @@ OAUTH2_PROVIDER = {
 OAUTH2_PROVIDER_APPLICATION_MODEL = "oauth2_provider.Application"
 
 LIBRARY_REDIRECT_URI = "http://127.0.0.1:8000/library/oauth/callback/"
+BLOG_REDIRECT_URI = "http://127.0.0.1:8000/blog/oauth/callback/"
 
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -182,7 +186,7 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'CM3070 - Final Project: IL-Hub Contextual Profile API',
-    'DESCRIPTION': 'A contextual API for federated systems',
+    'DESCRIPTION': 'API for contextual profile retrieval in federated systems',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     

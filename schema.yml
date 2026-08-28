@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: 'CM3070 - Final Project: IL-Hub Contextual Profile API'
   version: 1.0.0
-  description: A contextual API for federated systems
+  description: API for contextual profile retrieval in federated systems
 paths:
   /hub/api/v1/context-profile/:
     get:
