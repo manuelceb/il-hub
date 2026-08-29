@@ -9,7 +9,10 @@ from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 
 def _clear_blog_oauth_session(request):
-    # it clears Blog OAuth values from session
+    """
+    It clears Blog OAuth values from session
+    """
+    
     for session_key in (
         "blog_access_token",
         "blog_refresh_token",
@@ -42,9 +45,13 @@ def _get_context_profile(access_token):
 
 
 def landing(request):
+    """
+    clearing the django session if token is no longer valid
+    this behavior is designed for specific demo purposes, the client may reuse refresh tokens
+    """
     access_token = request.session.get("blog_access_token")
     context_profile, error, token_is_valid = _get_context_profile(access_token)
-    # clearing the django session if token is no longer valid
+    
     if access_token and not token_is_valid:
         _clear_blog_oauth_session(request)
         access_token = None
@@ -132,7 +139,6 @@ def oauth_callback(request):
 
     token_data = response.json()
 
-    # storing tokens in session and cleared temporary OAuth values
     request.session["blog_access_token"] = token_data.get("access_token")
     request.session["blog_refresh_token"] = token_data.get("refresh_token")
     request.session["blog_token_type"] = token_data.get("token_type")
@@ -144,6 +150,10 @@ def oauth_callback(request):
 
 
 def dashboard(request):
+    """
+    Similar to landing view, when access_token is no longer valid all oauth session is cleared.
+    """
+
     access_token = request.session.get("blog_access_token")
 
     context_profile = None
@@ -170,6 +180,10 @@ def dashboard(request):
 
 @require_POST
 def logout_from_blog(request):
+    """
+    When user logs out, all oauth session is cleared through _clear_blog_oauth_session(). This behavior is only for this demo purposes.
+    Client application should reuse refresh tokens their complete lifespan
+    """
     access_token = request.session.get("blog_access_token")
     refresh_token = request.session.get("blog_refresh_token")
 

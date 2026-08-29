@@ -9,7 +9,10 @@ from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 
 def _clear_library_oauth_session(request):
-    # it clears Library OAuth values from session
+    """
+    It clears Blog OAuth values from session
+    """
+
     for session_key in (
         "library_access_token",
         "library_refresh_token",
@@ -42,6 +45,10 @@ def _get_context_profile(access_token):
 
 
 def landing(request):
+    """
+    clearing the django session if token is no longer valid
+    this behavior is designed for specific demo purposes, the client may reuse refresh tokens
+    """
     access_token = request.session.get("library_access_token")
     context_profile, error, token_is_valid = _get_context_profile(access_token)
     # clearing the django session if token is no longer valid
@@ -144,6 +151,9 @@ def oauth_callback(request):
 
 
 def dashboard(request):
+    """
+    Similar to landing view, when access_token is no longer valid all oauth session is cleared.
+    """
     access_token = request.session.get("library_access_token")
 
     context_profile = None
@@ -170,6 +180,10 @@ def dashboard(request):
 
 @require_POST
 def logout_from_library(request):
+    """
+    When user logs out, all oauth session is cleared through _clear_blog_oauth_session(). This behavior is only for this demo purposes.
+    Client application should reuse refresh tokens their complete lifespan
+    """
     access_token = request.session.get("library_access_token")
     refresh_token = request.session.get("library_refresh_token")
 
