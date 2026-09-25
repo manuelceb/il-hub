@@ -32,4 +32,9 @@ urlpatterns = [
         views.BlogProfileEditView.as_view(),
         name="blog_profile_edit",
     ),
+    path(
+    "audit-logs/download/",
+    views.download_audit_log,
+    name="download_audit_log",
+    ),
 ]

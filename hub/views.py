@@ -208,3 +208,20 @@ def accept_privacy_notice(request):
     )
 
     return redirect("hub:home")
+
+from pathlib import Path
+from django.http import FileResponse, Http404
+from django.conf import settings
+
+def download_audit_log(request):
+    log_file = Path(settings.AUDIT_LOG_DIR) / "gdpr_logs.jsonl"
+
+    if not log_file.exists():
+        raise Http404("Audit log file not found.")
+
+    return FileResponse(
+        open(log_file, "rb"),
+        as_attachment=True,
+        filename="gdpr_logs.jsonl",
+        content_type="application/x-ndjson",
+    )
