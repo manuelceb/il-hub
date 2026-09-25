@@ -7,6 +7,11 @@ from django.db import transaction
 class Command(BaseCommand):
     help = "Project setup: migrations + seed database"
 
+    """
+    The project setup is set up here with users and basic settings. Existing migrations must be used, as
+    the order is necessary to avoid circular referencing errors between Django OAuth toolkit tables and hub models.
+    """
+
     def handle(self, *args, **options):
 
         self.stdout.write(self.style.MIGRATE_HEADING("Running migrate..."))

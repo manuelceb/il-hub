@@ -6,6 +6,14 @@ To avoid exposing all django-allauth urls, these are the unique needed for IL-Hu
 """
 
 urlpatterns = [
-    path("google/login/", google_views.oauth2_login, name="google_login",),
-    path("google/login/callback/", google_views.oauth2_callback, name="google_callback",),
+    path(
+        "google/login/",
+        google_views.oauth2_login,
+        name="google_login",
+    ),
+    path(
+        "google/login/callback/",
+        google_views.oauth2_callback,
+        name="google_callback",
+    ),
 ]

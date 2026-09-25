@@ -1,19 +1,23 @@
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
+from django.contrib.auth.forms import (
+    UserCreationForm,
+    UserChangeForm,
+    AuthenticationForm,
+)
 from .models import User, LibraryContext, BlogContext
 from django import forms
 
-class CustomUserCreationForm(UserCreationForm):
 
+class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
         fields = ("email",)
 
 
 class CustomUserChangeForm(UserChangeForm):
-
     class Meta:
         model = User
         fields = ("email",)
+
 
 class HubAuthenticationForm(AuthenticationForm):
     username = forms.EmailField(
@@ -37,6 +41,7 @@ class HubAuthenticationForm(AuthenticationForm):
             }
         ),
     )
+
 
 class LibraryContextForm(forms.ModelForm):
     class Meta:

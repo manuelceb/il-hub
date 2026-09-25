@@ -4,7 +4,6 @@ from .factories import UserFactory
 
 
 class UserAuthenticationTests(TestCase):
-
     def setUp(self):
         self.login_url = "/hub/login/"
 
@@ -33,7 +32,10 @@ class UserAuthenticationTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, "/hub/",)
+        self.assertRedirects(
+            response,
+            "/hub/",
+        )
         self.assertEqual(
             int(self.client.session["_auth_user_id"]),
             self.user.pk,

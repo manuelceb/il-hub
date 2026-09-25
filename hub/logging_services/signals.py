@@ -9,7 +9,11 @@ Using Django signals emmited during login process.
 Using user_uid to trace each request and store as log event according to defined in events.py
 """
 
-@receiver(user_logged_in, dispatch_uid="hub.logging_services.login_succeeded",)
+
+@receiver(
+    user_logged_in,
+    dispatch_uid="hub.logging_services.login_succeeded",
+)
 def successful_login(user, request, **kwargs):
     """
     Record a successful Django authentication event.
@@ -23,5 +27,7 @@ def successful_login(user, request, **kwargs):
         actor_type="user",
         actor_reference=user_uid,
         subject_reference=user_uid,
-        metadata={"device":request.META.get('HTTP_USER_AGENT', ''),}
+        metadata={
+            "device": request.META.get("HTTP_USER_AGENT", ""),
+        },
     )

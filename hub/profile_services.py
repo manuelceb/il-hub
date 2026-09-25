@@ -1,5 +1,9 @@
 from .models import LibraryContext, BlogContext
-from .serializers import BlogContextSerializer, LibraryContextSerializer, ProfileResponseSerializer
+from .serializers import (
+    BlogContextSerializer,
+    LibraryContextSerializer,
+    ProfileResponseSerializer,
+)
 from .api_errors import ContextualProfileNotFound, ClientHandlerNotConfigured
 
 
@@ -15,6 +19,7 @@ PROFILE_HANDLERS = {
         "prefetch": ("topics",),
     },
 }
+
 
 def get_user_profile(user, client_name, request=None):
     client_handler = PROFILE_HANDLERS.get(client_name)
@@ -36,18 +41,17 @@ def get_user_profile(user, client_name, request=None):
     profile_serializer = client_handler["serializer"](
         user_profile,
         context={"request": request},
-        )
+    )
 
     # Formatting and validating data structure  before sending
     response_serializer = ProfileResponseSerializer(
-        data = {
+        data={
             "user_uid": user.user_uid,
             "client": client_name,
-            "profile": profile_serializer.data
+            "profile": profile_serializer.data,
         }
     )
 
     response_serializer.is_valid(raise_exception=True)
-
 
     return response_serializer.data

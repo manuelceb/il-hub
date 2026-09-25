@@ -3,35 +3,30 @@ from .events import EventType, LogActorType, LogOutcome
 
 audit_logger = logging.getLogger("ilhub.gdpr")
 
+
 def record_gdpr_log_event(
     *,
     event_type,
     outcome,
     actor_type,
     actor_reference=None,
-    subject_reference= None,
+    subject_reference=None,
     metadata=None,
 ):
     """
-    Validate and write audit log event. 
+    Validate and write audit log event.
     It sends records to ilhub.gdpr logger.
     Metadata parameter must be a dict.
     """
 
     if not isinstance(event_type, EventType):
-        raise TypeError(
-            "event_type must be an EventType member."
-        )
+        raise TypeError("event_type must be an EventType member.")
 
     if outcome not in LogOutcome:
-        raise ValueError(
-            f"Unsupported log outcome: {outcome!r}"
-        )
+        raise ValueError(f"Unsupported log outcome: {outcome!r}")
 
     if actor_type not in LogActorType:
-        raise ValueError(
-            f"Unsupported log actor type: {actor_type!r}"
-        )
+        raise ValueError(f"Unsupported log actor type: {actor_type!r}")
 
     if metadata is None:
         event_metadata = {}

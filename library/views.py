@@ -8,6 +8,7 @@ from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 
+
 def _clear_library_oauth_session(request):
     """
     It clears Blog OAuth values from session
@@ -23,10 +24,11 @@ def _clear_library_oauth_session(request):
     ):
         request.session.pop(session_key, None)
 
+
 def _get_context_profile(access_token):
     if not access_token:
         return None, None, False
-  
+
     # When using bearer tokens, RFC6749 states the following header format to make the request
     response = requests.get(
         settings.HUB_CONTEXT_PROFILE_URL,
@@ -40,7 +42,7 @@ def _get_context_profile(access_token):
         # IL-Hub context profile request succeeded
         context_profile = response.json()
         return context_profile, None, True
-    
+
     return None, response.text, False
 
 
@@ -71,12 +73,14 @@ def login_with_hub(request):
     # generating PKCE values
     state = secrets.token_urlsafe(32)
     code_verifier = secrets.token_urlsafe(64)
-    
+
     # code challenge should be hashed according to oauth.toolkit library
-    code_challenge = base64.urlsafe_b64encode(
-        hashlib.sha256(code_verifier.encode()).digest()
-    ).rstrip(b"=").decode()
-    
+    code_challenge = (
+        base64.urlsafe_b64encode(hashlib.sha256(code_verifier.encode()).digest())
+        .rstrip(b"=")
+        .decode()
+    )
+
     # storing OAuth state and code verifier in session
     request.session["library_oauth_state"] = state
     request.session["library_oauth_code_verifier"] = code_verifier
@@ -98,7 +102,7 @@ def login_with_hub(request):
 
 
 def oauth_callback(request):
-    
+
     oauth_error = request.GET.get("error")
     error_description = request.GET.get("error_description")
     code = request.GET.get("code")
@@ -165,7 +169,7 @@ def dashboard(request):
         if not token_is_valid:
             _clear_library_oauth_session(request)
             access_token = None
-        
+
     return render(
         request,
         "library/dashboard.html",

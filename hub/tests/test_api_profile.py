@@ -7,7 +7,6 @@ from .factories import UserFactory
 
 
 class ContextProfileServiceTests(TestCase):
-
     def setUp(self):
         self.user = UserFactory(
             email="test@example.com",
@@ -36,9 +35,7 @@ class ContextProfileServiceTests(TestCase):
             "Test Reader",
         )
 
-        self.assertTrue(
-            data["profile"]["email_notifications"]
-        )
+        self.assertTrue(data["profile"]["email_notifications"])
 
     def test_response_contains_correct_user_uid(self):
         data = get_user_profile(
@@ -52,13 +49,9 @@ class ContextProfileServiceTests(TestCase):
         )
 
     def test_library_interest_topics_are_serialized(self):
-        topic_1 = LibraryInterestTopics.objects.create(
-            topics="Cybersecurity"
-        )
+        topic_1 = LibraryInterestTopics.objects.create(topics="Cybersecurity")
 
-        topic_2 = LibraryInterestTopics.objects.create(
-            topics="Artificial Intelligence"
-        )
+        topic_2 = LibraryInterestTopics.objects.create(topics="Artificial Intelligence")
 
         self.library_profile.interest_topics.add(
             topic_1,
@@ -79,9 +72,7 @@ class ContextProfileServiceTests(TestCase):
         )
 
     def test_unknown_client_raises_handler_not_configured(self):
-        with self.assertRaises(
-            ClientHandlerNotConfigured
-        ):
+        with self.assertRaises(ClientHandlerNotConfigured):
             get_user_profile(
                 user=self.user,
                 client_name="unknown-client",
@@ -90,9 +81,7 @@ class ContextProfileServiceTests(TestCase):
     def test_missing_profile_raises_contextual_profile_not_found(self):
         self.library_profile.delete()
 
-        with self.assertRaises(
-            ContextualProfileNotFound
-        ):
+        with self.assertRaises(ContextualProfileNotFound):
             get_user_profile(
                 user=self.user,
                 client_name="library",

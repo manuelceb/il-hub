@@ -5,6 +5,7 @@ class EventType(str, Enum):
     """
     A strict catalogue of GDPR-relevant event types. This prevents of getting event types out of control.
     """
+
     LOGIN_SUCCEEDED = "auth.login_succeeded"
     PROFILE_ACCESSED = "profile.accessed"
     PROFILE_UPDATED = "profile.updated"
@@ -18,6 +19,7 @@ class EventType(str, Enum):
         Return all permitted event values.
         """
         return frozenset(event.value for event in cls)
+
 
 class LogOutcome(str, Enum):
     SUCCESS = "success"

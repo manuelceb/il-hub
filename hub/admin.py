@@ -31,9 +31,7 @@ class LibraryContextInline(admin.StackedInline):
         "modified_at",
     )
 
-    filter_horizontal = (
-        "interest_topics",
-    )
+    filter_horizontal = ("interest_topics",)
 
 
 class BlogContextInline(admin.StackedInline):
@@ -57,9 +55,7 @@ class BlogContextInline(admin.StackedInline):
         "photo_modified_at",
     )
 
-    filter_horizontal = (
-        "topics",
-    )
+    filter_horizontal = ("topics",)
 
 
 class CustomUserAdmin(UserAdmin):

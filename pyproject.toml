@@ -1,0 +1,11 @@
+[tool.ruff]
+line-length = 88
+
+exclude = [
+    ".venv",
+    "migrations",
+    "settings.py",
+]
+
+lint.extend-select = ["E", "F", "I"]
+lint.extend-ignore = ["E501"]

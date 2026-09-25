@@ -2,6 +2,7 @@ import json
 import logging
 from datetime import datetime, timezone
 
+
 class GdprLogJsonFormatter(logging.Formatter):
     """
     Each logging record is converted into one JSON object.
@@ -15,7 +16,10 @@ class GdprLogJsonFormatter(logging.Formatter):
             "timestamp": self._format_timestamp(record.created),
             "level": record.levelname,
             "logger": record.name,
-            "event_type": gdpr_data.get("event_type",record.getMessage(),),
+            "event_type": gdpr_data.get(
+                "event_type",
+                record.getMessage(),
+            ),
             "outcome": gdpr_data.get("outcome"),
             "actor_type": gdpr_data.get("actor_type"),
             "actor_reference": gdpr_data.get("actor_reference"),
