@@ -28,6 +28,13 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
+CSRF_TRUSTED_ORIGINS = env.list(
+    "CSRF_TRUSTED_ORIGINS",
+    default=[]
+)
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 DEBUG = env("DEBUG")
 
 AUTH_USER_MODEL = "hub.User"
@@ -56,6 +63,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -92,9 +100,12 @@ WSGI_APPLICATION = 'v1.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": env(
+            "SQLITE_PATH",
+            default=str(BASE_DIR / "db.sqlite3")
+        ),
     }
 }
 
@@ -133,10 +144,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = Path(
+    env(
+        "MEDIA_ROOT",
+        default=str(BASE_DIR / "media")
+    )
+)
 
 LOGIN_URL = "hub:login"
 LOGIN_REDIRECT_URL = "hub:home"
@@ -145,15 +162,20 @@ LOGOUT_REDIRECT_URL = "hub:home"
 SESSION_COOKIE_AGE = 900
 
 
-HUB_AUTHORIZE_URL = "http://127.0.0.1:8000/o/authorize/"
-HUB_TOKEN_URL = "http://127.0.0.1:8000/o/token/"
-HUB_REVOKE_TOKEN_URL = "http://127.0.0.1:8000/o/revoke_token/"
+APP_BASE_URL = env(
+    "APP_BASE_URL",
+    default="http://127.0.0.1:8000"
+)
+
+HUB_AUTHORIZE_URL = f"{APP_BASE_URL}/o/authorize/"
+HUB_TOKEN_URL = f"{APP_BASE_URL}/o/token/"
+HUB_REVOKE_TOKEN_URL = f"{APP_BASE_URL}/o/revoke_token/"
 
 LIBRARY_CLIENT_ID = env("LIBRARY_CLIENT_ID")
 LIBRARY_CLIENT_SECRET = env("LIBRARY_CLIENT_SECRET")
 BLOG_CLIENT_ID = env("BLOG_CLIENT_ID")
 BLOG_CLIENT_SECRET = env("BLOG_CLIENT_SECRET")
-HUB_CONTEXT_PROFILE_URL = "http://127.0.0.1:8000/hub/api/v1/context-profile/"
+HUB_CONTEXT_PROFILE_URL = (f"{APP_BASE_URL}/hub/api/v1/context-profile/")
 
 OAUTH2_PROVIDER = {
     "ACCESS_TOKEN_EXPIRE_SECONDS": 60,
@@ -168,8 +190,8 @@ OAUTH2_PROVIDER = {
 
 OAUTH2_PROVIDER_APPLICATION_MODEL = "oauth2_provider.Application"
 
-LIBRARY_REDIRECT_URI = "http://127.0.0.1:8000/library/oauth/callback/"
-BLOG_REDIRECT_URI = "http://127.0.0.1:8000/blog/oauth/callback/"
+LIBRARY_REDIRECT_URI = ( f"{APP_BASE_URL}/library/oauth/callback/")
+BLOG_REDIRECT_URI = (f"{APP_BASE_URL}/blog/oauth/callback/")
 
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -209,7 +231,12 @@ SPECTACULAR_SETTINGS = {
     
 }
 
-AUDIT_LOG_DIR = BASE_DIR / "logs"
+AUDIT_LOG_DIR = Path(
+    env(
+        "AUDIT_LOG_DIR",
+        default=str(BASE_DIR / "logs")
+    )
+)
 AUDIT_LOG_DIR.mkdir(parents=True, exist_ok=True)
 
 LOGGING = {
